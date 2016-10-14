@@ -1,7 +1,6 @@
 package roman.com.booklisterapp.fragments;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -15,8 +14,6 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.apkfuns.logutils.LogUtils;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,13 +26,14 @@ import roman.com.booklisterapp.networking.BookLoader;
  * A fragment representing a list of books
  */
 public class BookFragment extends Fragment
-        implements LoaderManager.LoaderCallbacks<List<Book>>{
+        implements LoaderManager.LoaderCallbacks<List<Book>> {
 
     // id of the book loader
     private static final int LOADER_ID = 2701;
     // id for the string that goes into the bundle
     private static final String KEY_QUERY_STRING = "QUERY_STRING";
-
+    // what do these do?
+    private static final String ARG_COLUMN_COUNT = "column-count";
     // the string for the network api query
     private String mSearchQuery = null;
     //the list view
@@ -43,9 +41,6 @@ public class BookFragment extends Fragment
     // the circular progress bar view
     private ProgressBar mProgressBar;
     private List<Book> mBookList;
-
-    // what do these do?
-    private static final String ARG_COLUMN_COUNT = "column-count";
     private int mColumnCount = 1;
 
     /**
@@ -96,13 +91,13 @@ public class BookFragment extends Fragment
 
     /**
      * submit and execute a query to the network api via our asyntaskloader
+     *
      * @param searchQuery
      */
     public void onSearchSubmitted(String searchQuery) {
-        LogUtils.d("onSearchSubmitted");
         if (mSearchQuery == null && !isAdded()) {
             mSearchQuery = searchQuery;
-        }else if(mSearchQuery == null && isAdded()) {
+        } else if (mSearchQuery == null && isAdded()) {
             mSearchQuery = searchQuery;
             restartLoader();
         } else if (!mSearchQuery.equals(searchQuery) && isAdded()) {
@@ -115,13 +110,11 @@ public class BookFragment extends Fragment
 
     @Override
     public Loader<List<Book>> onCreateLoader(int id, Bundle args) {
-        LogUtils.d("onCreateLoader");
         return new BookLoader(this.getContext(), args.getString(KEY_QUERY_STRING));
     }
 
     @Override
     public void onLoadFinished(Loader<List<Book>> loader, List<Book> bookList) {
-        LogUtils.d("onLoadFinished");
         if (bookList == null) {
             Toast.makeText(getActivity(), "Problem retrieving data - try again", Toast.LENGTH_SHORT).show();
             return;
@@ -138,7 +131,6 @@ public class BookFragment extends Fragment
 
     @Override
     public void onLoaderReset(Loader<List<Book>> loader) {
-        LogUtils.d("onLoaderReset");
         //do nothing?
     }
 
@@ -146,7 +138,6 @@ public class BookFragment extends Fragment
      * make a new loader or get the data from a previous load
      */
     private void initiateBookDataLoad() {
-        LogUtils.d("initiateBookDataLoad");
         LoaderManager loaderManager = getLoaderManager();
         Bundle bundle = new Bundle();
         bundle.putString(KEY_QUERY_STRING, mSearchQuery);
@@ -157,7 +148,6 @@ public class BookFragment extends Fragment
      * the query has change - make a new loader with the new data
      */
     private void restartLoader() {
-        LogUtils.d("restartLoader");
 
         mRecyclerView.setVisibility(View.GONE);
         mProgressBar.setVisibility(View.VISIBLE);

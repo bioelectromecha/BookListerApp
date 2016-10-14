@@ -2,7 +2,6 @@ package roman.com.booklisterapp.networking;
 
 import android.text.TextUtils;
 
-import com.apkfuns.logutils.LogUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,7 +32,8 @@ public class BookApiHelper {
         try {
             url = new URL(stringUrl);
         } catch (MalformedURLException exception) {
-            LogUtils.d("Error with creating URL", exception);
+            System.out.println("Error with creating URL");
+            exception.printStackTrace();
             return null;
         }
         return url;
@@ -71,10 +71,11 @@ public class BookApiHelper {
                 inputStream = urlConnection.getInputStream();
                 jsonResponse = readFromStream(inputStream);
             } else {
-                LogUtils.d("Error response code: " + urlConnection.getResponseCode());
+                System.out.println("Error response code: " + urlConnection.getResponseCode());
             }
         } catch (IOException e) {
-            LogUtils.d("Problem retrieving the JSON results.", e);
+            System.out.println("Problem retrieving the JSON results.");
+            e.printStackTrace();
             // no matter what - do this
         } finally {
             if (urlConnection != null) {
@@ -149,7 +150,8 @@ public class BookApiHelper {
                     try {
                         description = volumeInfo.getString("description");
                     } catch (JSONException e) {
-                        LogUtils.d("JSONException thrown - there's no description");
+                        System.out.println("JSONException thrown - there's no description");
+                        e.printStackTrace();
                     }
                     bookList.add(new Book(title, authors, publishedDate, description));
                 } catch (JSONException e) {
@@ -159,7 +161,8 @@ public class BookApiHelper {
             //if all went well - return the books list
             return bookList;
         } catch (JSONException e) {
-            LogUtils.d("Problem parsing the JSON results", e);
+            System.out.println("Problem parsing the JSON results");
+            e.printStackTrace();
         }
         //return null if something went wrong
         return null;

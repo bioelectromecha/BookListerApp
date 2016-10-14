@@ -3,8 +3,6 @@ package roman.com.booklisterapp.networking;
 import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
 
-import com.apkfuns.logutils.LogUtils;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
@@ -23,19 +21,16 @@ public class BookLoader extends AsyncTaskLoader<List<Book>> {
 
     public BookLoader(Context context, String searchQuery) {
         super(context);
-        LogUtils.d("BookLoader Constructor");
         mQueryParams = searchQuery;
     }
 
     @Override
     protected void onStartLoading() {
-        LogUtils.d("onStartLoading");
         forceLoad();
     }
 
     @Override
     public List<Book> loadInBackground() {
-        LogUtils.d("loadInBackground");
         List<Book> bookList = null;
         URL url = BookApiHelper.createUrl(REQUEST_URL_BASE + mQueryParams + REQUEST_URL_SUFFIX);
 
@@ -44,12 +39,13 @@ public class BookLoader extends AsyncTaskLoader<List<Book>> {
         try {
             jsonResponse = BookApiHelper.makeHttpRequest(url);
         } catch (IOException e) {
-            LogUtils.d("Problem making the HTTP request.", e);
+            System.out.println("Problem making the HTTP request.");
+            e.printStackTrace();
         }
         if (jsonResponse != null) {
             bookList = BookApiHelper.parseJsonToBooks(jsonResponse);
         } else {
-            LogUtils.d("jsonResponse is null");
+            System.out.println("jsonResponse is null");
         }
         return bookList;
     }
